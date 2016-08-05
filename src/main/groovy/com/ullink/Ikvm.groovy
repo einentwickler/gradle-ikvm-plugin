@@ -31,12 +31,14 @@ class Ikvm extends ConventionTask {
     String main
     String platform
     def warnAsError
+    def jarTask
     
     Ikvm() {
-        conventionMapping.map "destinationDir", { project.jar.destinationDir }
+        conventionMapping.map "jarTask", { project.jar }
+        conventionMapping.map "destinationDir", { jarTask.destinationDir }
         conventionMapping.map "assemblyName", { project.name }
         conventionMapping.map "version", { project.version }
-        dependsOn(project.tasks.jar)
+        dependsOn(jarTask)
         outputs.files {
             if (generateDoc) {
                 return project.tasks.ikvmDoc.getDestinationFile()
@@ -127,8 +129,8 @@ class Ikvm extends ConventionTask {
 
     @InputFile
     def getJar() {
-        return project.jar.archivePath
-    }      
+        return jarTask.archivePath
+    }
     
     def getDestDir() {
         project.file(getDestinationDir())
